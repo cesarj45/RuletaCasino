@@ -34,9 +34,9 @@ function martingala()
 
   echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Vamos a jugar con una cantidad inicial de${endColour} ${greenColour}\$$initial_bet${endColour} ${grayColour}a${endColour} ${yellowColour}$par_impar${endColour}"
   
-  play_counter=1
+  play_counter=0
   backup_bet=$initial_bet
-  jugadas_malas= "[ "
+  jugadas_malas="[ "
   
   tput civis #Ocultar cursor 
   while true; do 
@@ -51,25 +51,45 @@ function martingala()
       if [ "$par_impar" == "par" ]; then 
         if [ "$(($random_number % 2))" -eq 0 ]; then
           if [ "$random_number" -eq 0 ]; then
-            echo -e "${yellowColour}[+]${endColour} ${redColour}Ha salido el 0, pierdes${endColour}"
-            echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+#            echo -e "${yellowColour}[+]${endColour} ${redColour}Ha salido el 0, pierdes${endColour}"
+#            echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
             jugadas_malas+="$random_number "
           else
-            echo -e "${yellowColour}[+]${endColour}${greenColour} El numero que ha salido es par, ¡Ganas!${endColour}"
+#            echo -e "${yellowColour}[+]${endColour}${greenColour} El numero que ha salido es par, ¡Ganas!${endColour}"
             reward=$(($initial_bet*2))
-            echo -e "${yellowColour}[+]${endColour} Ganancia total: ${yellowColour}\$$reward${endColour}"
+#            echo -e "${yellowColour}[+]${endColour} Ganancia total: ${yellowColour}\$$reward${endColour}"
             money=$(($money+$reward))
-            echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+#            echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
             initial_bet=$backup_bet
             jugadas_malas="[ "
           fi
         else
-          echo -e "${yellowColour}[+]${endColour} ${redColour}El numero que ha salido es impar, pierdes${endColour}"
+#          echo -e "${yellowColour}[+]${endColour} ${redColour}El numero que ha salido es impar, pierdes${endColour}"
           initial_bet=$(($initial_bet*2))
-          echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+#          echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
           jugadas_malas+="$random_number "
         fi
-       
+      else
+         if [ "$(($random_number % 2))" -eq 1 ]; then
+          if [ "$random_number" -eq 0 ]; then
+#            echo -e "${yellowColour}[+]${endColour} ${redColour}Ha salido el 0, pierdes${endColour}"
+#            echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+            jugadas_malas+="$random_number "
+          else
+ #           echo -e "${yellowColour}[+]${endColour}${greenColour} El numero que ha salido es par, ¡Ganas!${endColour}"
+            reward=$(($initial_bet*2))
+  #          echo -e "${yellowColour}[+]${endColour} Ganancia total: ${yellowColour}\$$reward${endColour}"
+            money=$(($money+$reward))
+   #         echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+            initial_bet=$backup_bet
+            jugadas_malas="[ "
+          fi
+        else
+#          echo -e "${yellowColour}[+]${endColour} ${redColour}El numero que ha salido es impar, pierdes${endColour}"
+          initial_bet=$(($initial_bet*2))
+#          echo -e "${yellowColour}[+]${endColour} Cartera: ${yellowColour}\$$money${endColour}"
+          jugadas_malas+="$random_number "
+        fi 
         #sleep 0.5
       fi
     else
