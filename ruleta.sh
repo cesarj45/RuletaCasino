@@ -115,12 +115,15 @@ function inverseLabrouchere(){
   bet=$((${my_sequence[0]} + ${my_sequence[-1]}))
 
   jugadas_totales=0
+  bet_to_renew=$((money + 50))  # Dinero el cual una vez alcanzado hara que renovemos nuestra secuencia a (1 2 3 4)
+  echo -e "${yellowColour}[+]${endColour}${grayColour} Se ha establecido el tope a revasar para renovar la secuencia en${endColour} ${yellowColour}\$$bet_to_renew${endColour}"
+#  sleep 10
   tput civis 
   while true; do
     random_number=$((RANDOM % 37))
     money=$((money - bet))
     if [ "$money" -ge 0 ]; then
-      let jugadas_totales+=1
+     let jugadas_totales+=1
       echo -e "\n${purpleColour}--------------------------------JUGADA $jugadas_totales------------------------------------${endColour}"
       echo -e "\n${yellowColour}[+]${endColour}${grayColour} Invertimos ${endColour}${yellowColour}\$$bet${endColour}"
       echo -e "${yellowColour}[+]${endColour} Tenemos ${yellowColour}\$$money${endColour}"
@@ -131,17 +134,26 @@ function inverseLabrouchere(){
         if [ "$(($random_number % 2))" -eq 0 ] && [ "$random_number" -ne 0 ]; then
           echo -e "${yellowColour}[+]${endColour}${grayColour} El numero es par, !ganas!${endColour}"
           reward=$((bet*2))
-          money=$((money+reward))
+          money=$((money+reward))   
           echo -e "${yellowColour}[+]${endColour} Tienes ${yellowColour}\$$money${endColour}"
-
+       
           my_sequence+=($bet)
           my_sequence=(${my_sequence[@]})
 
-          echo -e "${yellowColour}[+]${endColour}${grayColour} Nuestra nueva secuencia es ${endColour}${greenColour}[${my_sequence[@]}]${endColour}"
-          if [ "${#my_sequence[@]}" -ne 1 ]; then
+          if [ $money -gt $bet_to_renew ]; then
+            echo -e "${yellowColour}[+]${endColour} ${grayColour}Nuestro dinero ha superado el tope establecido de ${endColour}${yellowColour}\$$bet_to_renew${endColour} ${grayColour}para renovar la secuencia${endColour}"
+            bet_to_renew=$((bet_to_renew + 50))
+            echo -e "${yellowColour}[+]${endColour} ${grayColour}El tope se ha establecido en${endColour} ${yellowColour}\$$bet_to_renew${endColour}"
+            my_sequence=(1 2 3 4)
             bet=$((${my_sequence[0]} + ${my_sequence[-1]}))
-          elif [ "${#my_sequence[@]}" -eq 1 ]; then
+            echo -e "${yellowColour}[+]${endColour} ${grayColour}La secuencia ha sido restablecida a ${endColour}${greenColour}${my_sequence[@]}${endColour}"
+          else
+           echo -e "${yellowColour}[+]${endColour}${grayColour} Nuestra nueva secuencia es ${endColour}${greenColour}[${my_sequence[@]}]${endColour}"
+           if [ "${#my_sequence[@]}" -ne 1 ]; then
+            bet=$((${my_sequence[0]} + ${my_sequence[-1]}))
+           elif [ "${#my_sequence[@]}" -eq 1 ]; then
             bet=${my_sequence[0]}
+           fi
           fi
         else
           if [ "$random_number" -eq 0 ]; then
@@ -165,6 +177,13 @@ function inverseLabrouchere(){
             bet=$((${my_sequence[0]} + ${my_sequence[-1]}))
             echo -e "${yellowColour}[+]${endColour} ${grayColour}Restablecemos la secuencia a${endColour} ${greenColour}[${my_sequence[@]}]${endColour}"
           fi
+
+        if [ $money -le $(($bet_to_renew-100)) ]; then
+            echo -e "${yellowColour}[+]${endColour}${grayColour} Hemos llegado a un limite inferior critico, limite superior actualizado${endColour}"
+            bet_to_renew=$((bet_to_renew-50))
+            echo -e "${yellowColour}[+]${endColour}${grayColour} El tope ha sido renovado a ${endColour}${yellowColour}\$$bet_to_renew${endColour}"
+        fi
+
         fi
       fi
 #      sleep 3
